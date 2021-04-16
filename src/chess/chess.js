@@ -52,6 +52,7 @@ module.exports = function (CONFIG) {
                         if (!monthArchives.find(existingGames => existingGames.url == game.url)) {
                             monthArchives.push({
                                 url: game.url,
+                                playedWhite: game.white['@id'].endsWith(`/${CONFIG.playerId}`),
                                 tweeted: false
                             });
                         }
