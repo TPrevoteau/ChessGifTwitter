@@ -42,22 +42,27 @@ module.exports = function (CONFIG) {
     /**
      * Get missing archives for current month
      */
-    this.getPlayerArchives = function () {
+    this.getPlayerArchives = function (callback) {
         var _this = this;
         this.chessAPI.getPlayerCompleteMonthlyArchives(this.playerId, this.currentYear, this.currentMonth)
             .then(function(response){
                 if (response.body && response.body.games) {
                     var monthArchives = _this.archives[_this.currentYear][_this.currentMonth];
+                    // Get token and cookies before getting gifs
                     _this.gif.getTokenCookies(function() {
                         response.body.games.forEach(game => {
+                            // Check if we did not already got this game url
                             if (!monthArchives.find(existingGames => existingGames == game.url)) {
+                                // Add it to archives
                                 monthArchives.push(game.url);
                                 var playedWhite = game.white['@id'].endsWith(`/${CONFIG.playerId}`);
+                                // Get gif using https request
                                 _this.gif.getGif(game.url, !playedWhite, function(gifUrl) {
-                                    console.log(gifUrl);
+                                    if (callback) callback(gifUrl);
                                 });
                             }
                         });
+                        // Write in archives file
                         fs.writeFileSync(_this.fullArchivesPath, JSON.stringify(_this.archives));
                     });
                 }
@@ -65,10 +70,5 @@ module.exports = function (CONFIG) {
             function (error) {
                 console.error(error);
             });
-    };
-
-    this.getGif = function () {
-        var gameUrl = 'https://www.chess.com/game/live/12068139093';
-        this.gif.getGif(gameUrl, false);
     };
 };

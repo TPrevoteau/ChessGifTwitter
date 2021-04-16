@@ -4,6 +4,8 @@ var chessReq = require('./chess/chess');
 
 var App = function () {
     var chess = new chessReq(CONFIG.chess);
-    // chess.getPlayerArchives();
-    chess.getGif();
+    chess.init();
+    chess.getPlayerArchives(function (gifUrl) {
+        console.log('Should be tweeting', gifUrl);
+    });
 }();
