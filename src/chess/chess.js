@@ -48,16 +48,18 @@ module.exports = function (CONFIG) {
             .then(function(response){
                 if (response.body && response.body.games) {
                     var monthArchives = _this.archives[_this.currentYear][_this.currentMonth];
-                    response.body.games.forEach(game => {
-                        if (!monthArchives.find(existingGames => existingGames.url == game.url)) {
-                            monthArchives.push({
-                                url: game.url,
-                                playedWhite: game.white['@id'].endsWith(`/${CONFIG.playerId}`),
-                                tweeted: false
-                            });
-                        }
+                    _this.gif.getTokenCookies(function() {
+                        response.body.games.forEach(game => {
+                            if (!monthArchives.find(existingGames => existingGames == game.url)) {
+                                monthArchives.push(game.url);
+                                var playedWhite = game.white['@id'].endsWith(`/${CONFIG.playerId}`);
+                                _this.gif.getGif(game.url, !playedWhite, function(gifUrl) {
+                                    console.log(gifUrl);
+                                });
+                            }
+                        });
+                        fs.writeFileSync(_this.fullArchivesPath, JSON.stringify(_this.archives));
                     });
-                    fs.writeFileSync(_this.fullArchivesPath, JSON.stringify(_this.archives));
                 }
             },
             function (error) {
