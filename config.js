@@ -6,5 +6,10 @@ module.exports = {
         port: 443,
         gifPath: '/gifs'
     },
-    twitter: {}
+    twitter: {
+        consumer_key: 'Put here your twitter consumer key',  
+        consumer_secret: 'Put here your twitter consumer secret key',
+        access_token_key: 'Put here your twitter token key',  
+        access_token_secret: 'Put here your twitter token secret key'
+    }
 };
