@@ -142,7 +142,7 @@ module.exports = function (CONFIG) {
     this.downloadGif = function (gameUrl, gifUrl, callback) {
         var gameId = this.getId(gameUrl);
         (async () => {
-            var gifPath = `./bin/${gameId}.gif`;
+            var gifPath = `./bin/gifs/${gameId}.gif`;
             fs.writeFileSync(gifPath, await download(gifUrl));
             if (callback) callback(gifPath);
         })();

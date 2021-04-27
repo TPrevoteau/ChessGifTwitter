@@ -25,6 +25,10 @@ module.exports = function (CONFIG) {
         var dirPath = './bin';
         if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath);
 
+        // Initialize gif archives
+        var gifDirPath = './bin/gifs';
+        if (!fs.existsSync(gifDirPath)) fs.mkdirSync(gifDirPath);
+
         var fileName = 'archives.json';
         this.fullArchivesPath = `${dirPath}/${fileName}`;
         try{
