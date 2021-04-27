@@ -2,6 +2,8 @@
 var https = require('https');
 const { DOMParser } = require('xmldom');
 var cookie = require('cookie');
+const fs = require('fs');
+const download = require('download');
 
 module.exports = function (CONFIG) {
     this.assetPushCookie = undefined;
@@ -58,7 +60,7 @@ module.exports = function (CONFIG) {
                 var urlAttr = attributes.find(attr => attr.name == 'url');
                 var url = urlAttr.value;
                 console.log('This is gif url', url);
-                if (callback) callback(url);
+                this.downloadGif(gameUrl, url, callback);
             })
         })
 
@@ -130,4 +132,29 @@ module.exports = function (CONFIG) {
 
         req.end();
     };
+
+    /**
+     * Download the gif in bin folder
+     * @param {String} gameUrl - Url of the game
+     * @param {String} gifUrl - Url of the gif
+     * @param {Function} callback - Callback function
+     */
+    this.downloadGif = function (gameUrl, gifUrl, callback) {
+        var gameId = this.getId(gameUrl);
+        (async () => {
+            var gifPath = `./bin/${gameId}.gif`;
+            fs.writeFileSync(gifPath, await download(gifUrl));
+            if (callback) callback(gifPath);
+        })();
+    };
+
+    /**
+     * Returns id of the game
+     * @param {String} gameUrl - Url of the game
+     * @returns Id of the game
+     */
+    this.getId = function (gameUrl) {
+        var splitedStr = gameUrl.split('/');
+        return splitedStr.pop();
+    }
 };
