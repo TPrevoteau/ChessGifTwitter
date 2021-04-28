@@ -75,4 +75,29 @@ module.exports = function (CONFIG) {
                 console.error(error);
             });
     };
+
+    /**
+     * Init archives for current month
+     */
+     this.initPlayerArchives = function () {
+        var _this = this;
+        this.chessAPI.getPlayerCompleteMonthlyArchives(this.playerId, this.currentYear, this.currentMonth)
+            .then(function(response){
+                if (response.body && response.body.games) {
+                    var monthArchives = _this.archives[_this.currentYear][_this.currentMonth];
+                    response.body.games.forEach(game => {
+                        // Check if we did not already got this game url
+                        if (!monthArchives.find(existingGames => existingGames == game.url)) {
+                            // Add it to archives
+                            monthArchives.push(game.url);
+                        }
+                    });
+                    // Write in archives file
+                    fs.writeFileSync(_this.fullArchivesPath, JSON.stringify(_this.archives));
+                }
+            },
+            function (error) {
+                console.error(error);
+            });
+    };
 };
