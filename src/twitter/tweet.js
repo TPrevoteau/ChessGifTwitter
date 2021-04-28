@@ -15,6 +15,14 @@ module.exports = function (CONFIG) {
             .then(finalizeUpload)
             .then(mediaId => {
                 client.post('statuses/update', {media_ids: mediaId}, function (error, tweet, response) {
+                    // Delete gif in bin
+                    fs.unlink(gifPath, (err) => {
+                        if(err){
+                            console.error(err.message);
+                            return;
+                        }
+                        console.log("Gif file deleted successfully");
+                    });
                     if (error) throw error;
                     console.log('Tweeted', tweet);
                 });
